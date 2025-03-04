@@ -1,0 +1,20 @@
+.last{
+    font-size: large;
+    font-family: 'Roboto', sans-serif;
+    text-align: left;
+    margin-left: -3vw;
+    font-weight:inherit;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    color:rgb(63, 63, 63);
+    transform: scale(0.91);
+    word-spacing: 1px;
+    letter-spacing: 0.3px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+
+
+.cover{
+    margin-bottom: -6vh;
+    background-color: rgb(226, 227, 231);
+}

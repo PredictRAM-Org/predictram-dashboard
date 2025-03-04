@@ -1,0 +1,50 @@
+.card-container {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.card-options-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+  margin: 1em;
+}
+
+.card-options-title {
+  font-size: 2.5em;
+}
+
+.card-options-title-medium {
+  font-size: 2em;
+}
+
+.card-options {
+  font-size: 2em;
+  padding: 2em;
+  width: 10em;
+  height: 5em;
+}
+
+.card-footer-custom {
+  padding: 2em;
+  background-color: #eaf4fe;
+  margin: 0;
+  border-radius: 20px;
+}
+
+.card-dashboard {
+  border-radius: 0.625rem;
+  padding: 1.25rem;
+}
+
+.card-button {
+  width: fit-content;
+}
+
+.card-img {
+  height: 30vh;
+  width: 30vw;
+  object-fit: contain;
+}

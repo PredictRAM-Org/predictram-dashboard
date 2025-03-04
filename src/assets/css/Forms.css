@@ -1,0 +1,22 @@
+.form-contact-container {
+  position: relative;
+}
+
+.form-contact-value {
+  display: inline-block;
+  position: absolute;
+  top: 2.1em;
+  left: 0.6em;
+  text-align: center;
+  background: #fafafb;
+  padding: 5px;
+}
+
+.form-contact-input {
+  padding-left: 2.5em;
+}
+
+.form-size-medium {
+  width: 40vw;
+  padding: 0em 1em;
+}

@@ -1,0 +1,21 @@
+.app .ql-container {
+  background: #fefcfc;
+  overflow-y: auto;
+}
+
+/* Snow Theme */
+.app .ql-snow.ql-toolbar {
+  display: block;
+  background: #eaecec;
+}
+
+.app .ql-editor {
+  min-height: 18em;
+  max-height: 25em;
+}
+
+#editorjs {
+  background-color: #f4f3f3d4;
+  padding: 5% 10%;
+  box-shadow: 10%;
+}

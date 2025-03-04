@@ -1,0 +1,71 @@
+.cpi{
+    font-family: 'Roboto', sans-serif;
+    transform: scaleX(1.1);
+    letter-spacing: -0.5px;
+    font-weight: inherit;
+    font-size: 18px;
+    margin-left: 1.8vw;
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.container{
+    margin-top: 7vh;
+    border-style: solid;
+    margin-right: 20px;
+    text-align: left;
+    width:320px;
+    height: 120px;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: rgb(185, 185, 186);
+    background-color: rgb(217, 249, 217);
+    transition: background-color 0.8s ease;
+    transition: box-shadow 0.2s ease;
+}
+
+.cpi1{
+    display: flex;
+    margin-top: 3vh;
+    margin-left:-0.3vw;
+    justify-content: center;
+    word-spacing: 1px;
+}
+
+.container:hover{
+    background-color: lightgreen;
+    cursor: pointer;
+    box-shadow: 2px 2px 3px black;
+}
+
+.consumerarrowimg{
+    height: 40px;
+    margin-right: 0.1vw;
+    margin-bottom: 1.5vw;
+    border-style: solid;
+    border-radius: 300px;
+    animation-name: rotaterrow;
+    transform: rotate(180deg);
+    border-color: black;
+    transition: 0.2s ease-in;
+   
+}
+.flexer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.consumerarrowimg:hover{
+    box-shadow: -2px -2px 3px black;
+    color:white;
+    background-color: white;
+    border-color: white;
+}
+
+.link:visited{
+    text-decoration: none;
+    color:'black';
+}
+
+.textcpi{
+    margin-top: -10px;
+}

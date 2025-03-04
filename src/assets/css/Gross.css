@@ -1,0 +1,63 @@
+.gross {
+    margin-top: 2vh;
+    font-family: 'Roboto', sans-serif;
+    transform: scaleX(1.1);
+    letter-spacing: -0.5px;
+    font-weight: inherit;
+    font-size: 18px;
+    margin-left: 6.7vw;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.grosscontainer {
+    margin-top: 7vh;
+    border-style: solid;
+    margin-right: 20px;
+    text-align: left;
+    width: 320px;
+    height:120px;
+    margin-left: 1vw;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: rgb(185, 185, 186);
+    background-color:rgb(250, 228, 189);
+    transition: background-color 0.8s ease;
+    transition: box-shadow 0.2s ease;
+}
+
+.gross1 {
+    margin-left: 50px;
+    word-spacing: 1px;
+}
+
+.grosscontainer:hover {
+    background-color: orange;
+    cursor: pointer;
+    box-shadow: 2px 2px 3px black;
+}
+
+.grossarrowimg {
+    height: 40px;
+    margin-right: 2vw;
+    margin-top: 4.2vw;
+    margin-bottom: 2vw;
+    border-style: solid;
+    border-radius: 30px;
+    border-color: black;
+    animation-name: rotaterrow;
+    transform: rotate(180deg);
+    transition: 0.2s ease-in;
+}
+
+.grossflexer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.grossarrowimg:hover {
+    box-shadow: -2px -2px 3px black;
+    color: white;
+    background-color: white;
+    border-color: white;
+}
