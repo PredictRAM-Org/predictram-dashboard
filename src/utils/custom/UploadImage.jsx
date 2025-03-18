@@ -7,8 +7,10 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 const s3Client = new S3Client({
   region: "us-east-1",
   credentials: {
-    accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID,
-    secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
+    // accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID,
+    // secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
+    accessKeyId: "AKIAWOOXTYZDEPMEVVEA",
+    secretAccessKey: "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",
   },
 });
 
