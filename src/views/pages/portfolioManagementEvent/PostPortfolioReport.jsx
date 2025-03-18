@@ -16,7 +16,6 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 ReactQuill.Quill.register("modules/imageCompress", ImageCompress);
 ReactQuill.Quill.register("modules/imageUploader", ImageUploader);
 
-
 const s3Client = new S3Client({
   region: "us-east-1",
   credentials: {
