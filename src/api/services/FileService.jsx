@@ -1,20 +1,22 @@
-// import toast from 'react-hot-toast';
-import { BlobServiceClient } from "@azure/storage-blob";
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
 
 class FileService {
   constructor() {
-    this.CONTAINER_NAME = "researchpaper-image";
-    this.SAS_TOKEN =
-      "sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2030-09-10T21:29:24Z&st=2022-09-10T13:29:24Z&spr=https&sig=s3kLJQTP6SPOtOv23vgCecHFMiCsOi7NIorN0XctFuA%3D";
-    this.STORAGE_ACCOUNT_NAME = "researchpaper";
+    this.FOLDER_NAME = "researchpaper-image";
+    this.BUCKET_NAME = "predictram-main-files";
+    this.REGION = "us-east-1";
 
-    this.upload_url = `https://${this.STORAGE_ACCOUNT_NAME}.blob.core.windows.net/?${this.SAS_TOKEN}`;
-
-    this.blobService = new BlobServiceClient(this.upload_url);
-
-    this.containerClient = this.blobService.getContainerClient(
-      this.CONTAINER_NAME
-    );
+    this.s3Client = new S3Client({
+      region: this.REGION,
+      credentials: {
+        accessKeyId: "AKIAWOOXTYZDEPMEVVEA",
+        secretAccessKey: "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",
+      },
+    });
   }
 
   async upload(file, onProgress, uploadheader) {
@@ -23,23 +25,42 @@ class FileService {
       ?.toString(16)
       .substring(2, 8)}.${extension}`;
 
-    const uploadedFile = await this.containerClient.uploadBlockBlob(
-      `${filename}`,
-      file,
-      1,
-      {
-        onProgress,
-        blobHTTPHeaders: { ...uploadheader },
-      }
-    );
-    return uploadedFile?.blockBlobClient?.url;
+    const params = {
+      Bucket: this.BUCKET_NAME,
+      Key: `${this.FOLDER_NAME}/${filename}`,
+      Body: file,
+      ContentType: uploadheader?.blobContentType,
+    };
+
+    try {
+      const command = new PutObjectCommand(params);
+      await this.s3Client.send(command);
+
+      // Generate the URL of the uploaded file
+      const fileUrl = `https://${this.BUCKET_NAME}.s3.${this.REGION}.amazonaws.com/${this.FOLDER_NAME}/${filename}`;
+
+      return fileUrl;
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      throw error;
+    }
   }
 
   async delete(Url) {
-    const blobName = Url.split("/").pop().split("?")[0];
-    console.log(blobName);
-    const blobClient = this.containerClient.getBlockBlobClient(blobName);
-    await blobClient.deleteIfExists({ deleteSnapshots: "include" });
+    const blobName = Url.split("/").pop();
+    const params = {
+      Bucket: this.BUCKET_NAME,
+      Key: blobName,
+    };
+
+    try {
+      const command = new DeleteObjectCommand(params);
+      await this.s3Client.send(command);
+      console.log(`File deleted successfully: ${blobName}`);
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      throw error;
+    }
   }
 }
 

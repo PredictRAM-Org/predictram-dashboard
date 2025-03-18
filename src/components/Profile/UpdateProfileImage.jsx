@@ -1,4 +1,3 @@
-import { BlobServiceClient } from "@azure/storage-blob";
 import { cibGmail, cilVoicemail } from "@coreui/icons-pro";
 import CIcon from "@coreui/icons-react";
 import {
@@ -16,6 +15,7 @@ import {
   uploadProilePicture,
 } from "../../api/services/ProfileService";
 import { useHistory } from "react-router-dom";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 const customStyles = {
   backgroundPic: {
@@ -30,10 +30,16 @@ const customStyles = {
   },
 };
 
-const SAS_TOKEN =
-  "sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2030-09-10T21:29:24Z&st=2022-09-10T13:29:24Z&spr=https&sig=s3kLJQTP6SPOtOv23vgCecHFMiCsOi7NIorN0XctFuA%3D";
-const STORAGE_ACCOUNT_NAME = "researchpaper";
-const CONTAINER_NAME = "researchpaper-image";
+const s3Client = new S3Client({
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: "AKIAWOOXTYZDEPMEVVEA",
+    secretAccessKey: "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",
+  },
+});
+
+const BUCKET_NAME = "predictram-main-files";
+const FOLDER_NAME = "researchpaper-image";
 
 function UpdateProfileImage({
   show,
@@ -48,24 +54,37 @@ function UpdateProfileImage({
   const history = useHistory();
 
   const uploadFileToBlop = async (e) => {
-    console.log("file", e.target.files);
-    setImgSrc(URL.createObjectURL(e.target.files[0]));
+    const file = e.target.files[0];
+    if (!file) return;
 
-    if (!e.target.files[0]) return [];
+    // Set the image source to a local URL for preview
+    setImgSrc(URL.createObjectURL(file));
 
-    const blobService = new BlobServiceClient(
-      `https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/?${SAS_TOKEN}`
-    );
-    // get Container - full public read access
-    const containerClient = blobService.getContainerClient(CONTAINER_NAME);
+    try {
+      // Generate a unique filename
+      const extension = file.name.split(".")[1];
+      const filename = `${Math.random()
+        .toString(16)
+        .substring(2, 8)}.${extension}`;
 
-    const uploadedFile = await containerClient.uploadBlockBlob(
-      `${e.target.files[0].name}`,
-      e.target.files[0],
-      1
-    );
-    if (!!uploadedFile) {
-      setImgSrc(uploadedFile.blockBlobClient.url);
+      // Upload the file to S3
+      const params = {
+        Bucket: BUCKET_NAME,
+        Key: `${FOLDER_NAME}/${filename}`,
+        Body: file,
+        ContentType: file.type, // Preserve the original file type
+      };
+
+      const command = new PutObjectCommand(params);
+      await s3Client.send(command);
+
+      // Generate the URL of the uploaded file
+      const fileUrl = `https://${BUCKET_NAME}.s3.us-east-1.amazonaws.com/${FOLDER_NAME}/${filename}`;
+
+      // Update the image source with the S3 URL
+      setImgSrc(fileUrl);
+    } catch (error) {
+      console.error("Error uploading file:", error);
     }
   };
 

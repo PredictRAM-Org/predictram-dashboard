@@ -11,7 +11,6 @@ import TagsList from "../../../../config/TagsList";
 import CurrentEventSelect from "../../../inputs/SelectInputs/SelectWrapper/CurrentEventSelect";
 import ImageCompress from "quill-image-compress";
 import ImageUploader from "quill-image-uploader";
-import { BlobServiceClient } from "@azure/storage-blob";
 import imageCompression from "browser-image-compression";
 import { apiPost } from "../../../../api/BaseAPICaller";
 import Swal from "sweetalert2";
@@ -35,11 +34,19 @@ import { Button, Container, Grid } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
-const CONTAINER_NAME = "researchpaper-image";
-const SAS_TOKEN =
-  "sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2030-09-10T21:29:24Z&st=2022-09-10T13:29:24Z&spr=https&sig=s3kLJQTP6SPOtOv23vgCecHFMiCsOi7NIorN0XctFuA%3D";
-const STORAGE_ACCOUNT_NAME = "researchpaper";
+const s3Client = new S3Client({
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: "AKIAWOOXTYZDEPMEVVEA",
+    secretAccessKey: "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",
+  },
+});
+
+const BUCKET_NAME = "predictram-main-files";
+
+const FOLDER_NAME = "researchpaper-image";
 function tableParser(block) {
   const rows = block.data.content;
 
@@ -105,30 +112,38 @@ PostResearch.modules = {
   },
   imageUploader: {
     upload: async (file) => {
-      const options = {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 600,
-      };
+      try {
+        // Compress the image
+        const options = {
+          maxSizeMB: 1, // Maximum size in MB
+          maxWidthOrHeight: 600, // Maximum width or height
+        };
+        const compressedFile = await imageCompression(file, options);
 
-      const compressedFile = await imageCompression(file, options);
+        // Generate a unique filename
+        const extension = file.name?.split(".")[1];
+        const filename = `${Math.random()
+          ?.toString(16)
+          .substring(2, 8)}.${extension}`;
 
-      const blobService = new BlobServiceClient(
-        `https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/?${SAS_TOKEN}`
-      );
+        // Upload the compressed file to S3
+        const params = {
+          Bucket: BUCKET_NAME,
+          Key: `${FOLDER_NAME}/${filename}`,
+          Body: compressedFile,
+          ContentType: file.type, // Preserve the original file type
+        };
 
-      const containerClient = blobService.getContainerClient(CONTAINER_NAME);
-      const extension = file.name?.split(".")[1];
-      const filename = `${Math.random()
-        ?.toString(16)
-        .substring(2, 8)}.${extension}`;
+        const command = new PutObjectCommand(params);
+        await s3Client.send(command);
 
-      const uploadedFile = await containerClient.uploadBlockBlob(
-        `${filename}`,
-        compressedFile,
-        1
-      );
-      if (!!uploadedFile) {
-        return uploadedFile.blockBlobClient.url;
+        // Generate the URL of the uploaded file
+        const fileUrl = `https://${BUCKET_NAME}.s3.us-east-1.amazonaws.com/${FOLDER_NAME}/${filename}`;
+
+        return fileUrl;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        throw error;
       }
     },
   },
@@ -195,8 +210,6 @@ export default function PostResearch() {
         inlineToolbar: true,
       },
       code: CodeTool,
-      // list: List,
-      // checklist: Checklist,
       embed: Embed,
       hyperlink: {
         class: Hyperlink,
@@ -215,49 +228,69 @@ export default function PostResearch() {
         config: {
           uploader: {
             async uploadByFile(file) {
-              // your own uploading logic here
-              const options = {
-                maxSizeMB: 1,
-                maxWidthOrHeight: 600,
-              };
+              try {
+                // Compress the image
+                const options = {
+                  maxSizeMB: 1, // Maximum size in MB
+                  maxWidthOrHeight: 600, // Maximum width or height
+                };
+                const compressedFile = await imageCompression(file, options);
 
-              const compressedFile = await imageCompression(file, options);
+                // Generate a unique filename
+                const extension = file.name?.split(".")[1];
+                const filename = `${Math.random()
+                  ?.toString(16)
+                  .substring(2, 8)}.${extension}`;
 
-              const blobService = new BlobServiceClient(
-                `https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/?${SAS_TOKEN}`
-              );
+                // Upload the compressed file to S3
+                const params = {
+                  Bucket: BUCKET_NAME,
+                  Key: `${FOLDER_NAME}/${filename}`,
+                  Body: compressedFile,
+                  ContentType: file.type, // Preserve the original file type
+                };
 
-              const containerClient =
-                blobService.getContainerClient(CONTAINER_NAME);
-              const extension = file.name?.split(".")[1];
-              const filename = `${Math.random()
-                ?.toString(16)
-                .substring(2, 8)}.${extension}`;
+                const command = new PutObjectCommand(params);
+                await s3Client.send(command);
 
-              const uploadedFile = await containerClient.uploadBlockBlob(
-                `${filename}`,
-                compressedFile,
-                1
-              );
-              if (!!uploadedFile) {
+                // Generate the URL of the uploaded file
+                const fileUrl = `https://${BUCKET_NAME}.s3.us-east-1.amazonaws.com/${FOLDER_NAME}/${filename}`;
+
                 return {
                   success: 1,
                   file: {
-                    url: uploadedFile.blockBlobClient.url,
-                    // any other image data you want to store, such as width, height, color, extension, etc
+                    url: fileUrl,
+                    // You can add additional metadata here if needed
+                  },
+                };
+              } catch (error) {
+                console.error("Error uploading image:", error);
+                return {
+                  success: 0,
+                  file: {
+                    url: null,
                   },
                 };
               }
             },
             async uploadByUrl(url) {
-              const blob = await (await fetch(url)).blob();
-              const newurl = await this.uploadByFile(blob);
-              return {
-                success: 1,
-                file: {
-                  url: newurl.file.url,
-                },
-              };
+              try {
+                // Fetch the image from the URL
+                const response = await fetch(url);
+                const blob = await response.blob();
+
+                // Upload the fetched image using the uploadByFile method
+                const result = await this.uploadByFile(blob);
+                return result;
+              } catch (error) {
+                console.error("Error uploading image by URL:", error);
+                return {
+                  success: 0,
+                  file: {
+                    url: null,
+                  },
+                };
+              }
             },
           },
         },

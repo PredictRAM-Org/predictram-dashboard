@@ -11,14 +11,22 @@ import { BlobServiceClient } from "@azure/storage-blob";
 import { useSelector } from "react-redux";
 import imageCompression from "browser-image-compression";
 import { submitPortfolioManagementReport } from "../../../api/services/PortfolioMangementService";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 ReactQuill.Quill.register("modules/imageCompress", ImageCompress);
 ReactQuill.Quill.register("modules/imageUploader", ImageUploader);
 
-const CONTAINER_NAME = "researchpaper-image";
-const SAS_TOKEN =
-  "sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2030-09-10T21:29:24Z&st=2022-09-10T13:29:24Z&spr=https&sig=s3kLJQTP6SPOtOv23vgCecHFMiCsOi7NIorN0XctFuA%3D";
-const STORAGE_ACCOUNT_NAME = "researchpaper";
+
+const s3Client = new S3Client({
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: "AKIAWOOXTYZDEPMEVVEA",
+    secretAccessKey: "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",
+  },
+});
+
+const BUCKET_NAME = "predictram-main-files";
+const FOLDER_NAME = "researchpaper-image";
 
 PostPortfolioReport.formats = [
   "header",
@@ -64,30 +72,37 @@ PostPortfolioReport.modules = {
   },
   imageUploader: {
     upload: async (file) => {
-      const options = {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 600,
-      };
+      try {
+        // Compress the image
+        const options = {
+          maxSizeMB: 1, // Maximum size in MB
+          maxWidthOrHeight: 600, // Maximum width or height
+        };
+        const compressedFile = await imageCompression(file, options);
 
-      const compressedFile = await imageCompression(file, options);
+        // Generate a unique filename
+        const extension = file.name.split(".")[1];
+        const filename = `${Math.random()
+          .toString(16)
+          .substring(2, 8)}.${extension}`;
 
-      const blobService = new BlobServiceClient(
-        `https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/?${SAS_TOKEN}`
-      );
+        // Upload the compressed file to S3
+        const params = {
+          Bucket: BUCKET_NAME,
+          Key: `${FOLDER_NAME}/${filename}`,
+          Body: compressedFile,
+          ContentType: file.type, // Preserve the original file type
+        };
 
-      const containerClient = blobService.getContainerClient(CONTAINER_NAME);
-      const extension = file.name.split(".")[1];
-      const filename = `${Math.random()
-        .toString(16)
-        .substring(2, 8)}.${extension}`;
+        const command = new PutObjectCommand(params);
+        await s3Client.send(command);
 
-      const uploadedFile = await containerClient.uploadBlockBlob(
-        `/portfolioReport/${filename}`,
-        compressedFile,
-        1
-      );
-      if (!!uploadedFile) {
-        return uploadedFile.blockBlobClient.url;
+        // Generate the URL of the uploaded file
+        const fileUrl = `https://${BUCKET_NAME}.s3.${s3Client.config.region}.amazonaws.com/${FOLDER_NAME}/${filename}`;
+        return fileUrl;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        throw error;
       }
     },
   },
