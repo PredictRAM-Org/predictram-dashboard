@@ -55,15 +55,15 @@ export default function Register() {
           "Email not verified!! Please click on send otp and verify"
         );
 
-      if (!phoneConfig?.phnotp)
-        return toast.error("Mobile number not verified!!");
+      // if (!phoneConfig?.phnotp)
+      //   return toast.error("Mobile number not verified!!");
 
       const secret_token = await bcrypt.hash(emailConfig.email, 10);
 
       const userRegistered = await registerUser(setLoading, {
         name: state.name,
         ...emailConfig,
-        ...phoneConfig,
+        // ...phoneConfig,
         password: state.password,
         refercode: state.refercode,
         secret_token,
@@ -140,7 +140,7 @@ export default function Register() {
                 />{" "}
               </CCol>
               <EmailVerifier setValue={setEmailConfig} />
-              <PhoneVerifier setValue={setPhoneConfig} />
+              {/* <PhoneVerifier setValue={setPhoneConfig} /> */}
               <CRow className="m-2">
                 <CCol sm={12} className="text-center">
                   <CButton type="submit">Register</CButton>
