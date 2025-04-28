@@ -30,6 +30,7 @@ const investorReducer = (state = initState, action) => {
         profileCompleted,
         secretToken,
         uniqueId,
+        model_credit,
       } = action.payload;
 
       return {
@@ -48,6 +49,7 @@ const investorReducer = (state = initState, action) => {
         secretToken,
         expiry,
         triedFreePremium,
+        model_credit,
       };
     case "INVESTOR_AUTHENTICATED":
       return {

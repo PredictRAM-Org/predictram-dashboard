@@ -135,6 +135,10 @@ export default function InvestorAppSidebar() {
             <CIcon customClassName="nav-icon" icon={cilGraph} />
             Ml Codes
           </CNavItem>
+          <CNavItem to="/investor/models" component={NavLink}>
+            <CIcon customClassName="nav-icon" icon={cilChart} />
+            Models
+          </CNavItem>
         </CNavGroup>
         <CNavGroup
           toggler={

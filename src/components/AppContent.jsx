@@ -128,6 +128,9 @@ const Ratioanalyzer = lazy(() =>
 );
 const Hedgeos = lazy(() => import("../views/pages/users/hedgeos/HedgeOs"));
 const MlCodes = lazy(() => import("../views/pages/investors/MLCodes/ml-codes"));
+const Models = lazy(() =>
+  import("../views/pages/investors/Models/InvestorModelDashboard")
+);
 const PredictGpt = lazy(() =>
   import("../views/pages/users/predictgpt/PredictGpt")
 );
@@ -722,6 +725,11 @@ export default function AppContent() {
             exact
             path="/investor/ml-codes"
             render={(props) => <MlCodes {...props} />}
+          />
+          <Route
+            exact
+            path="/investor/models"
+            render={(props) => <Models {...props} />}
           />
           <Route
             exact
