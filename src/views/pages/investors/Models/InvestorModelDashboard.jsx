@@ -51,7 +51,7 @@ const models = [
         api_key: "symbol",
       },
     ],
-    endpoint: "/valuation-predictor/",
+    endpoint: "/valuation-predictor",
     outputComponent: (data) => <StockValuationPrediction data={data} />,
   },
   {
