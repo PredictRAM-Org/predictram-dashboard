@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getInvestors } from "../../../../api/services/InvestorService";
 import StockValuationPrediction from "./StockValuationPrediction";
 import StockDividendPrediction from "./StockDividendPrediction";
+import StockIndicatorAnalysis from "./StockIndicatorAnalysis";
 
 // const API_BASE_URL = "https://model.predictram.com";
 const API_BASE_URL = "http://localhost:8000";
@@ -77,6 +78,7 @@ const models = [
       },
     ],
     endpoint: "/stock-indicator-analysis",
+    outputComponent: (data) => <StockIndicatorAnalysis data={data} />,
   },
   {
     name: "Multi-Factor Quant Model (Smart Beta)",
