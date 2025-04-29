@@ -30,6 +30,7 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 import { useDispatch, useSelector } from "react-redux";
 import { getInvestors } from "../../../../api/services/InvestorService";
+import StockValuationPrediction from "./StockValuationPrediction";
 
 const API_BASE_URL = "https://model.predictram.com";
 
@@ -46,6 +47,7 @@ const models = [
       },
     ],
     endpoint: "/valuation-predictor/",
+    outputComponent: (data) => <StockValuationPrediction data={data} />,
   },
   {
     name: "Stock Dividend Prediction Model",
@@ -147,21 +149,21 @@ export default function InvestorModelDashboard() {
     const fetchOptions = async () => {
       const fetchExcel = async (url) => {
         const res = await axios.get(url, { responseType: "arraybuffer" });
-        return XLSX.read(new Uint8Array(res.data), { type: "array" });
+        return XLSX.read(new Uint8Array(res?.data), { type: "array" });
       };
 
       try {
         const stockBook = await fetchExcel(
           "https://raw.githubusercontent.com/PyStatIQ-Lab/stock-dividend-prediction/main/stocks.xlsx"
         );
-        const stockSheet = stockBook.Sheets[stockBook.SheetNames[0]];
+        const stockSheet = stockBook.Sheets[stockBook?.SheetNames?.[0]];
         const stockJson = XLSX.utils.sheet_to_json(stockSheet);
-        setStockOptions(stockJson.map((row) => row.Symbol).filter(Boolean));
+        setStockOptions(stockJson?.map((row) => row?.Symbol).filter(Boolean));
 
         const sheetBook = await fetchExcel(
           "https://raw.githubusercontent.com/PyStatIQ-Lab/Pystatiq-Stocks-call-generator/main/stocklist.xlsx"
         );
-        setSheetOptions(sheetBook.SheetNames);
+        setSheetOptions(sheetBook?.SheetNames);
       } catch (error) {
         console.error("Error loading options", error);
       }
@@ -177,13 +179,13 @@ export default function InvestorModelDashboard() {
   const runModel = async () => {
     if (!selectedModel) return;
     const { endpoint } = selectedModel;
-
+    setLoading(true);
     try {
       let url = `${API_BASE_URL}${endpoint}`;
       let response;
 
-      const data = Object.fromEntries(
-        Object.entries(inputValues).filter(([_, v]) => v)
+      const data = Object?.fromEntries(
+        Object?.entries(inputValues)?.filter(([_, v]) => v)
       );
       console.log(data);
       response = await axios.post(url, data, {
@@ -200,9 +202,11 @@ export default function InvestorModelDashboard() {
 
       dispatch({ type: "INVESTOR_SIGNUP", payload: userData });
 
-      setOutput(JSON.stringify(response.data, null, 2));
+      setOutput(response?.data);
     } catch (err) {
       setOutput(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -255,7 +259,7 @@ export default function InvestorModelDashboard() {
               value={value}
               onChange={(e) => handleInputChange(api_key, e.target.value)}
             >
-              {options.map((option) => (
+              {options?.map((option) => (
                 <FormControlLabel
                   key={option}
                   value={option}
@@ -288,7 +292,7 @@ export default function InvestorModelDashboard() {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("xxl"));
 
   const sidebarContent = (
-    <Box p={3} width={430} position="relative" sx={{ height: "100%" }}>
+    <Box p={3} position="relative" sx={{ height: "100%" }}>
       <IconButton
         onClick={() => {
           setSelectedModel(null);
@@ -302,14 +306,14 @@ export default function InvestorModelDashboard() {
       {selectedModel && (
         <>
           <Typography variant="h6" gutterBottom>
-            {selectedModel.name}
+            {selectedModel?.name}
           </Typography>
           <Typography variant="body2" paragraph>
-            {selectedModel.description}
+            {selectedModel?.description}
           </Typography>
           <Divider sx={{ my: 2 }} />
           <Typography variant="subtitle1">Input Parameters</Typography>
-          {selectedModel.inputs.map((input, idx) =>
+          {selectedModel?.inputs?.map((input, idx) =>
             renderInputField(input, idx)
           )}
           <Button
@@ -317,19 +321,21 @@ export default function InvestorModelDashboard() {
             fullWidth
             sx={{ mt: 2 }}
             onClick={runModel}
+            disabled={loading}
           >
-            Run Model
+            {loading ? "Running Model Will Take Some Time..." : "Run Model"}
           </Button>
           {output && (
             <Box mt={2}>
-              <Typography variant="subtitle2">Output</Typography>
               <pre
                 style={{
                   whiteSpace: "pre-wrap",
                   wordWrap: "break-word",
                 }}
               >
-                {output}
+                {selectedModel?.outputComponent
+                  ? selectedModel?.outputComponent(output)
+                  : JSON.stringify(output, null, 2)}
               </pre>
             </Box>
           )}
@@ -375,10 +381,10 @@ export default function InvestorModelDashboard() {
               >
                 <CardContent>
                   <Typography variant="h6" color="primary">
-                    {model.name}
+                    {model?.name}
                   </Typography>
                   <Typography variant="body2" paragraph>
-                    {model.description}
+                    {model?.description}
                   </Typography>
                 </CardContent>
               </Card>
@@ -391,7 +397,6 @@ export default function InvestorModelDashboard() {
             sx={{
               position: "fixed",
               zIndex: 30,
-              width: Boolean(selectedModel) ? "236px" : "0px",
               height: "100vh",
               transition: theme.transitions.create("width"),
               overflow: "hidden",
