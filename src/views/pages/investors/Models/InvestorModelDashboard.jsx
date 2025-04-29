@@ -34,6 +34,7 @@ import StockValuationPrediction from "./StockValuationPrediction";
 import StockDividendPrediction from "./StockDividendPrediction";
 import StockIndicatorAnalysis from "./StockIndicatorAnalysis";
 import MultiFactorQuantModel from "./MultiFactorQuantModel";
+import EarningMomentumBreakout from "./EarningMomentumBreakout";
 
 const API_BASE_URL = "https://model.predictram.com";
 
@@ -131,7 +132,8 @@ const models = [
         api_key: "time_horizon",
       },
     ],
-    endpoint: "/earnings-momentum/",
+    endpoint: "/earnings-momentum",
+    outputComponent: (data) => <EarningMomentumBreakout data={data} />,
   },
 ];
 

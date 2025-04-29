@@ -1,18 +1,5 @@
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
-  Box,
-  Chip,
-  Stack,
-  Divider,
-} from "@mui/material";
+import { Paper, Typography, Box, Chip, Stack, Divider } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
 const StockTable = ({ title, data }) => {
