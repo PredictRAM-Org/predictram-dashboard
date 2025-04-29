@@ -35,6 +35,7 @@ import StockDividendPrediction from "./StockDividendPrediction";
 import StockIndicatorAnalysis from "./StockIndicatorAnalysis";
 import MultiFactorQuantModel from "./MultiFactorQuantModel";
 import EarningMomentumBreakout from "./EarningMomentumBreakout";
+import { toast } from "react-toastify";
 
 const API_BASE_URL = "https://model.predictram.com";
 
@@ -188,6 +189,10 @@ export default function InvestorModelDashboard() {
   const runModel = async () => {
     if (!selectedModel) return;
     const { endpoint } = selectedModel;
+    if (model_credit <= 0)
+      return toast.error(
+        "You have no model credits left. Please contact support to recharge your credits."
+      );
     setErr("");
     setLoading(true);
     try {
