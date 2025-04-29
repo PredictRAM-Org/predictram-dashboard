@@ -33,9 +33,9 @@ import { getInvestors } from "../../../../api/services/InvestorService";
 import StockValuationPrediction from "./StockValuationPrediction";
 import StockDividendPrediction from "./StockDividendPrediction";
 import StockIndicatorAnalysis from "./StockIndicatorAnalysis";
+import MultiFactorQuantModel from "./MultiFactorQuantModel";
 
-// const API_BASE_URL = "https://model.predictram.com";
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://model.predictram.com";
 
 const models = [
   {
@@ -105,6 +105,7 @@ const models = [
       },
     ],
     endpoint: "/quant-model",
+    outputComponent: (data) => <MultiFactorQuantModel data={data} />,
   },
   {
     name: "Earnings Momentum + Breakout Strategy",
