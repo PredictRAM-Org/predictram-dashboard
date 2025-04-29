@@ -206,6 +206,7 @@ export default function InvestorModelDashboard() {
       response = await axios.post(url, data, {
         headers: {
           userId: userId,
+          "User-Agent": "Thunder Client (https://www.thunderclient.com)",
           accept: "application/json",
           "Content-Type": "application/json",
         },
