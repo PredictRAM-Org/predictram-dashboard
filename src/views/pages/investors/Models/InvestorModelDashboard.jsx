@@ -31,8 +31,10 @@ import * as XLSX from "xlsx";
 import { useDispatch, useSelector } from "react-redux";
 import { getInvestors } from "../../../../api/services/InvestorService";
 import StockValuationPrediction from "./StockValuationPrediction";
+import StockDividendPrediction from "./StockDividendPrediction";
 
-const API_BASE_URL = "https://model.predictram.com";
+// const API_BASE_URL = "https://model.predictram.com";
+const API_BASE_URL = "http://localhost:8000";
 
 const models = [
   {
@@ -61,6 +63,7 @@ const models = [
       },
     ],
     endpoint: "/stock-dividend-prediction",
+    outputComponent: (data) => <StockDividendPrediction data={data} />,
   },
   {
     name: "Stock Indicator Analysis Model",
@@ -140,6 +143,7 @@ export default function InvestorModelDashboard() {
   const [selectedModel, setSelectedModel] = useState(null);
   const [inputValues, setInputValues] = useState({});
   const [output, setOutput] = useState("");
+  const [err, setErr] = useState("");
   const [stockOptions, setStockOptions] = useState([]);
   const [sheetOptions, setSheetOptions] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -179,6 +183,7 @@ export default function InvestorModelDashboard() {
   const runModel = async () => {
     if (!selectedModel) return;
     const { endpoint } = selectedModel;
+    setErr("");
     setLoading(true);
     try {
       let url = `${API_BASE_URL}${endpoint}`;
@@ -204,7 +209,8 @@ export default function InvestorModelDashboard() {
 
       setOutput(response?.data);
     } catch (err) {
-      setOutput(err.message);
+      setOutput("");
+      setErr(err?.message || "An error occurred.");
     } finally {
       setLoading(false);
     }
@@ -337,6 +343,13 @@ export default function InvestorModelDashboard() {
                   ? selectedModel?.outputComponent(output)
                   : JSON.stringify(output, null, 2)}
               </pre>
+            </Box>
+          )}
+          {err && (
+            <Box mt={2}>
+              <Typography variant="body2" color="error">
+                {err || "An error occurred."}
+              </Typography>
             </Box>
           )}
         </>
