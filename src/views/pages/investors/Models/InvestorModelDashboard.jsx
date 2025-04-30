@@ -24,6 +24,8 @@ import {
   FormLabel,
   useMediaQuery,
   useTheme,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
@@ -36,6 +38,8 @@ import StockIndicatorAnalysis from "./StockIndicatorAnalysis";
 import MultiFactorQuantModel from "./MultiFactorQuantModel";
 import EarningMomentumBreakout from "./EarningMomentumBreakout";
 import { toast } from "react-toastify";
+import { Add, AttachMoney, LinkRounded, Money } from "@mui/icons-material";
+import AddCreditDialog from "./AddCreditDialog";
 
 const API_BASE_URL = "https://model.predictram.com";
 
@@ -154,6 +158,7 @@ export default function InvestorModelDashboard() {
   const [sheetOptions, setSheetOptions] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showAddCredit, setShowAddCredit] = useState(false);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -202,7 +207,7 @@ export default function InvestorModelDashboard() {
       const data = Object?.fromEntries(
         Object?.entries(inputValues)?.filter(([_, v]) => v)
       );
-      console.log(data);
+      // console.log(data);
       response = await axios.post(url, data, {
         headers: {
           userId: userId,
@@ -315,6 +320,7 @@ export default function InvestorModelDashboard() {
           setSelectedModel(null);
           setInputValues({});
           setOutput("");
+          setErr("");
         }}
         sx={{ position: "absolute", top: 8, right: 8 }}
       >
@@ -339,6 +345,7 @@ export default function InvestorModelDashboard() {
             sx={{ mt: 2 }}
             onClick={runModel}
             disabled={loading}
+            startIcon={loading ? <CircularProgress size={20} /> : null}
           >
             {loading ? "Running Model Will Take Some Time..." : "Run Model"}
           </Button>
@@ -370,6 +377,7 @@ export default function InvestorModelDashboard() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <AddCreditDialog show={showAddCredit} setShow={setShowAddCredit} />
       <AppBar position="relative">
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Typography variant="h6">Quantitative Models Dashboard</Typography>
@@ -393,7 +401,26 @@ export default function InvestorModelDashboard() {
         </Toolbar>
       </AppBar>
 
-      <Toolbar />
+      <Alert
+        sx={{ mt: "2em" }}
+        icon={<AttachMoney fontSize="inherit" />}
+        color="success"
+        action={
+          <Button
+            sx={{ fontWeight: "bold" }}
+            variant="outlined"
+            onClick={() => setShowAddCredit(true)}
+            color="inherit"
+            size="small"
+          >
+            Add Credit
+          </Button>
+        }
+      >
+        Want to add credit inorder to use all Models ?
+      </Alert>
+
+      <Divider sx={{ my: 2 }} />
 
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <Grid container spacing={3}>

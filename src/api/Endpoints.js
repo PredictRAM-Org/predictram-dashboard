@@ -24,6 +24,8 @@ export const PAYMENT_GATEWAY = `${BASE_URL}/paymentGateway`;
 export const PAYMENT_GATEWAY_WITH_TOKEN = `${BASE_URL}/paymentConfirmByToken`;
 export const GIVE_FREE_MEMBERSHIP = `${BASE_URL}/freeMembership/give`;
 export const CANCEL_FREE_MEMBERSHIP = `${BASE_URL}/freeMembership/cancel`;
+export const CREATE_PAYMENT_ORDER = `${BASE_URL}/create-payment-order`;
+export const MODEL_CREDIT_PAYMENT_CONFIRMATION = `${BASE_URL}/model-payment-confirm`;
 
 // tags
 export const TAG_FOLLOW = `${BASE_URL}/followtag`;

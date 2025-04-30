@@ -8,7 +8,7 @@ import {
   CCardFooter,
   CCardHeader,
 } from "@coreui/react";
-import displayRazorpay from "../../utils/PaymentGateway";
+import { displayRazorpay } from "../../utils/PaymentGateway";
 import { useSelector } from "react-redux";
 import { getFutureDate } from "../../utils/DateTimeService";
 

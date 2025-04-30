@@ -19,7 +19,7 @@ import {
   giveFreePremiumMembership,
 } from "../../api/services/PaymentService";
 import { getFutureDate } from "../../utils/DateTimeService";
-import displayRazorpay from "../../utils/PaymentGateway";
+import { displayRazorpay } from "../../utils/PaymentGateway";
 import PaymentAmountSelect from "./PaymentAmountSelect";
 
 export default function PaymentOption({ resetState, confirmState }) {

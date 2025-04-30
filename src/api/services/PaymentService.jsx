@@ -5,7 +5,9 @@ import {
   PAYMENT_CONFIRM,
   PAYMENT_GATEWAY,
   PAYMENT_GATEWAY_WITH_TOKEN,
-  PAYMENT_DETAILS
+  PAYMENT_DETAILS,
+  CREATE_PAYMENT_ORDER,
+  MODEL_CREDIT_PAYMENT_CONFIRMATION,
 } from "../Endpoints";
 import {
   INVESTOR_CANCEL_FREE_MEMBERSHIP,
@@ -66,4 +68,14 @@ export const cancelFreePremiumMembership = async (
       ? INVESTOR_CANCEL_FREE_MEMBERSHIP
       : CANCEL_FREE_MEMBERSHIP;
   return await apiPut(setLoading, apiUrl, body, headers);
+};
+
+export const createPaymentOrder = async (setLoading, body, headers) => {
+  const apiUrl = CREATE_PAYMENT_ORDER;
+  return await apiPost(setLoading, apiUrl, body, headers);
+};
+
+export const confirmModelCreditPayment = async (setLoading, body, headers) => {
+  const apiUrl = MODEL_CREDIT_PAYMENT_CONFIRMATION;
+  return await apiPost(setLoading, apiUrl, body, headers);
 };
