@@ -4,10 +4,6 @@ import {
   Box,
   Drawer,
   Typography,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
   TextField,
   Button,
   Divider,
@@ -26,8 +22,11 @@ import {
   useTheme,
   Alert,
   CircularProgress,
+  styled,
+  Collapse,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,6 +39,7 @@ import EarningMomentumBreakout from "./EarningMomentumBreakout";
 import { toast } from "react-toastify";
 import { Add, AttachMoney, LinkRounded, Money } from "@mui/icons-material";
 import AddCreditDialog from "./AddCreditDialog";
+import EvaluationChart from "./EvaluationChart";
 
 const API_BASE_URL = "https://model.predictram.com";
 
@@ -57,6 +57,26 @@ const models = [
     ],
     endpoint: "/valuation-predictor",
     outputComponent: (data) => <StockValuationPrediction data={data} />,
+    analysis: {
+      dataAccuracy: {
+        score: 85,
+        description: "Measures completeness of financial data",
+      },
+      modelEfficiency: {
+        score: 75,
+        description: "Evaluates computational complexity",
+      },
+      problemSolving: { score: 90, description: "Assesses edge case handling" },
+      logicalStructure: {
+        score: 80,
+        description: "Rates metric relationships",
+      },
+      riskProfile: { score: 65, description: "Conservative (low-risk) focus" },
+      overallScore: {
+        score: 82,
+        description: "Weighted average of all scores",
+      },
+    },
   },
   {
     name: "Stock Dividend Prediction Model",
@@ -71,6 +91,32 @@ const models = [
     ],
     endpoint: "/stock-dividend-prediction",
     outputComponent: (data) => <StockDividendPrediction data={data} />,
+    analysis: {
+      dataAccuracy: {
+        score: 88,
+        description: "Comprehensive financial metrics from Yahoo Finance",
+      },
+      modelEfficiency: {
+        score: 82,
+        description: "Efficient data fetching and processing",
+      },
+      problemSolving: {
+        score: 85,
+        description: "Handles multiple valuation scenarios well",
+      },
+      logicalStructure: {
+        score: 90,
+        description: "Clear progression from data to analysis",
+      },
+      riskProfile: {
+        score: 75,
+        description: "Balanced risk assessment (medium-risk)",
+      },
+      overallScore: {
+        score: 84,
+        description: "Strong valuation analysis framework",
+      },
+    },
   },
   {
     name: "Stock Indicator Analysis Model",
@@ -85,6 +131,32 @@ const models = [
     ],
     endpoint: "/stock-indicator-analysis",
     outputComponent: (data) => <StockIndicatorAnalysis data={data} />,
+    analysis: {
+      dataAccuracy: {
+        score: 92,
+        description: "Comprehensive technical indicators + fundamentals",
+      },
+      modelEfficiency: {
+        score: 78,
+        description: "Complex pattern detection impacts speed",
+      },
+      problemSolving: {
+        score: 95,
+        description: "Excellent multi-timeframe analysis",
+      },
+      logicalStructure: {
+        score: 90,
+        description: "Clear technical/fundamental integration",
+      },
+      riskProfile: {
+        score: 85,
+        description: "Aggressive (high-risk/high-reward)",
+      },
+      overallScore: {
+        score: 88,
+        description: "Advanced technical analysis system",
+      },
+    },
   },
   {
     name: "Multi-Factor Quant Model (Smart Beta)",
@@ -112,6 +184,32 @@ const models = [
     ],
     endpoint: "/quant-model",
     outputComponent: (data) => <MultiFactorQuantModel data={data} />,
+    analysis: {
+      dataAccuracy: {
+        score: 88,
+        description: "Robust fundamental + technical data integration",
+      },
+      modelEfficiency: {
+        score: 85,
+        description: "Optimized scoring with caching",
+      },
+      problemSolving: {
+        score: 90,
+        description: "Dynamic weight adjustment based on risk/time horizon",
+      },
+      logicalStructure: {
+        score: 92,
+        description: "Clear factor separation and scoring methodology",
+      },
+      riskProfile: {
+        score: 75,
+        description: "Adaptive (adjusts to user risk preference)",
+      },
+      overallScore: {
+        score: 86,
+        description: "Strong quantitative model foundation",
+      },
+    },
   },
   {
     name: "Earnings Momentum + Breakout Strategy",
@@ -139,8 +237,45 @@ const models = [
     ],
     endpoint: "/earnings-momentum",
     outputComponent: (data) => <EarningMomentumBreakout data={data} />,
+    analysis: {
+      dataAccuracy: {
+        score: 90,
+        description: "Comprehensive earnings + technical data",
+      },
+      modelEfficiency: {
+        score: 82,
+        description: "Complex technical calculations impact speed",
+      },
+      problemSolving: {
+        score: 88,
+        description: "Effective earnings momentum capture",
+      },
+      logicalStructure: {
+        score: 85,
+        description: "Clear earnings + breakout integration",
+      },
+      riskProfile: {
+        score: 92,
+        description: "Adaptive position sizing (conservative/aggressive)",
+      },
+      overallScore: {
+        score: 87,
+        description: "Strong event-driven trading strategy",
+      },
+    },
   },
 ];
+
+const ExpandMore = styled((props) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: expand ? "rotate(180deg)" : "rotate(0deg)",
+  transition: theme.transitions.create("transform", {
+    duration: theme.transitions.duration.shortest,
+  }),
+  marginLeft: "auto",
+}));
 
 export default function InvestorModelDashboard() {
   const theme = useTheme();
@@ -159,6 +294,7 @@ export default function InvestorModelDashboard() {
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
   const [showAddCredit, setShowAddCredit] = useState(false);
+  const [expanded, setExpanded] = useState([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -189,6 +325,14 @@ export default function InvestorModelDashboard() {
 
   const handleInputChange = (field, value) => {
     setInputValues((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleExpandClick = (index) => {
+    if (expanded.includes(index)) {
+      setExpanded((prev) => prev.filter((i) => i !== index));
+    } else {
+      setExpanded((prev) => [...prev, index]);
+    }
   };
 
   const runModel = async () => {
@@ -437,6 +581,32 @@ export default function InvestorModelDashboard() {
                   <Typography variant="body2" paragraph>
                     {model?.description}
                   </Typography>
+                  {/* Expand button */}
+                  <Box display="flex" alignItems="center">
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Evaluation
+                    </Typography>
+                    <ExpandMore
+                      expand={expanded.includes(index) ? 1 : 0}
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent triggering card click
+                        handleExpandClick(index);
+                      }}
+                      aria-expanded={expanded.includes(index)}
+                      aria-label="show more"
+                    >
+                      <ExpandMoreIcon />
+                    </ExpandMore>
+                  </Box>
+
+                  {/* Collapsible EvaluationChart */}
+                  <Collapse
+                    in={expanded.includes(index)}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <EvaluationChart evaluation={model?.analysis} />
+                  </Collapse>
                 </CardContent>
               </Card>
             </Grid>
