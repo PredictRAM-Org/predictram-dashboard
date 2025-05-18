@@ -127,24 +127,25 @@ export default function InvestorAppSidebar() {
             </>
           }
         >
-          <CNavItem to="/investor/hedgeos" component={NavLink}>
+          {/* <CNavItem to="/investor/hedgeos" component={NavLink}>
             <CIcon customClassName="nav-icon" icon={cilBrowser} />
             Hedge OS
           </CNavItem>
           <CNavItem to="/investor/ml-codes" component={NavLink}>
             <CIcon customClassName="nav-icon" icon={cilGraph} />
             Ml Codes
-          </CNavItem>
+          </CNavItem> */}
           <CNavItem to="/investor/models" component={NavLink}>
             <CIcon customClassName="nav-icon" icon={cilChart} />
-            Models
+            Ml Model
           </CNavItem>
         </CNavGroup>
         <CNavGroup
           toggler={
             <>
               <CIcon customClassName="nav-icon" icon={cilNewspaper} />
-              Portfolio Management
+              {/* Portfolio Management */}
+              Ask Advisors
             </>
           }
         >
@@ -163,10 +164,10 @@ export default function InvestorAppSidebar() {
           <CIcon customClassName="nav-icon" icon={cilSpreadsheet} />
           Event Analysis
         </CNavItem>
-        <CNavItem to="/investor/view/incomestatement/event" component={NavLink}>
+        {/* <CNavItem to="/investor/view/incomestatement/event" component={NavLink}>
           <CIcon customClassName="nav-icon" icon={cilSpreadsheet} />
           View Income Event
-        </CNavItem>
+        </CNavItem> */}
         <CNavItem to="/investor/papers" component={NavLink}>
           <CIcon customClassName="nav-icon" icon={cilNewspaper} />
           View Papers

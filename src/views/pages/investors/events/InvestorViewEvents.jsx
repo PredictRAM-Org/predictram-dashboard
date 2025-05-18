@@ -191,7 +191,8 @@ export default function InvestorViewEvents() {
                           fontWeight="fontWeightBold"
                           variant="h6"
                         >
-                          Total Reports Submitted
+                          {/* Total Reports Submitted */}
+                          Total Reports Datapoints
                         </Typography>
                         <Typography
                           color="#5A8DEE"
@@ -208,7 +209,8 @@ export default function InvestorViewEvents() {
                           fontWeight="fontWeightBold"
                           variant="h6"
                         >
-                          Total Stocks Analyzed
+                          {/* Total Stocks Analyzed */}
+                          Total Report View
                         </Typography>
                         <Typography
                           color="#5A8DEE"
@@ -225,7 +227,8 @@ export default function InvestorViewEvents() {
                           fontWeight="fontWeightBold"
                           variant="h6"
                         >
-                          Total Analysts
+                          {/* Total Analysts */}
+                          Total Reach
                         </Typography>
                         <Typography
                           color="#5A8DEE"
