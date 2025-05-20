@@ -1,14 +1,15 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyD1JaupyMY3C1LJ8Kdyoy967sWq-uvVhqE",
-  authDomain: "predictram-web.firebaseapp.com",
-  projectId: "predictram-web",
-  storageBucket: "predictram-web.appspot.com",
-  messagingSenderId: "486089959451",
-  appId: "1:486089959451:web:1d95f7755ff4ff5b6d30be",
-  measurementId: "G-R99MQ65D4C",
+  apiKey: "AIzaSyCrtXKpwWaY_7LSwyzeLrVdChb_IQrTL7s",
+  authDomain: "predictam-web.firebaseapp.com",
+  projectId: "predictam-web",
+  storageBucket: "predictam-web.firebasestorage.app",
+  messagingSenderId: "663856511731",
+  appId: "1:663856511731:web:a2a0a70e7c34d911d2d586",
+  measurementId: "G-PS9W2CY8BE",
 };
 
 const app = initializeApp(firebaseConfig);
