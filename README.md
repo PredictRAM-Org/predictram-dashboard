@@ -15,3 +15,5 @@
 2. Pull the main branch everyday after commiting your changes
 3. After your changes are made, make a PR.
 4. Inform in the group about your changes with your branch name
+
+
