@@ -21,6 +21,7 @@ import {
   cilCalendar,
   cilBrowser,
   cilGraph,
+  cilLockLocked,
 } from "@coreui/icons";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -28,19 +29,20 @@ import {
   fyers_refresh_token_key,
 } from "../utils/custom/fyersLogin";
 import { paytmMoney_access_token_key } from "../utils/custom/paytmMoneyLogin";
+import { cilMobileLock } from "@coreui/icons-pro";
 
 export default function InvestorAppSidebar() {
   const dispatch = useDispatch();
   const sidebarShow = useSelector(
     (state) => state.investorSidebarShow.investorSidebarShow
   );
-  const premiumUser = useSelector((state) => state.user.premiumUser);
+  const premiumUser = useSelector((state) => state.investor.premiumUser);
+  const kycCompleted = useSelector((state) => state.investor.kycCompleted);
   const fyers_access_token = localStorage.getItem(fyers_access_token_key);
   const fyers_refresh_token = localStorage.getItem(fyers_refresh_token_key);
   const paytmMoney_access_token = localStorage.getItem(
     paytmMoney_access_token_key
   );
-
   return (
     <CSidebar
       position="fixed"
@@ -57,29 +59,40 @@ export default function InvestorAppSidebar() {
         <CNavGroup
           toggler={
             <>
-              <CIcon customClassName="nav-icon" icon={cilChartPie} />
+              <CIcon
+                customClassName="nav-icon"
+                icon={
+                  !premiumUser && !kycCompleted ? cilLockLocked : cilChartPie
+                }
+              />
               Portfolio
             </>
           }
         >
-          {!fyers_access_token &&
+          {/* {!fyers_access_token &&
             !fyers_refresh_token &&
             !paytmMoney_access_token && (
               <CNavItem to="/investor/broker/connect" component={NavLink}>
                 Connect with Broker
               </CNavItem>
-            )}
+            )} */}
           <CNavItem
+            disabled={!premiumUser && !kycCompleted}
             to="/investor/portfolio/create-portfolio"
             component={NavLink}
           >
             Create Portfolio
           </CNavItem>
-          <CNavItem to="/investor/portfolio/your-risk" component={NavLink}>
+          <CNavItem
+            disabled={!premiumUser && !kycCompleted}
+            to="/investor/portfolio/your-risk"
+            component={NavLink}
+          >
             Know Your Risk
           </CNavItem>
           {fyers_access_token && fyers_refresh_token && (
             <CNavItem
+              disabled={!premiumUser && !kycCompleted}
               to="/investor/fyers/portfolio/holdings"
               component={NavLink}
             >
@@ -88,6 +101,7 @@ export default function InvestorAppSidebar() {
           )}
           {fyers_access_token && fyers_refresh_token && (
             <CNavItem
+              disabled={!premiumUser && !kycCompleted}
               to="/investor/fyers/portfolio/positions"
               component={NavLink}
             >
@@ -96,6 +110,7 @@ export default function InvestorAppSidebar() {
           )}
           {paytmMoney_access_token && (
             <CNavItem
+              disabled={!premiumUser && !kycCompleted}
               to="/investor/paytmMoney/portfolio/overview"
               component={NavLink}
             >
@@ -122,7 +137,12 @@ export default function InvestorAppSidebar() {
         <CNavGroup
           toggler={
             <>
-              <CIcon customClassName="nav-icon" icon={cilNewspaper} />
+              <CIcon
+                customClassName="nav-icon"
+                icon={
+                  !premiumUser && !kycCompleted ? cilLockLocked : cilNewspaper
+                }
+              />
               Analysis Tools
             </>
           }
@@ -135,7 +155,11 @@ export default function InvestorAppSidebar() {
             <CIcon customClassName="nav-icon" icon={cilGraph} />
             Ml Codes
           </CNavItem> */}
-          <CNavItem to="/investor/models" component={NavLink}>
+          <CNavItem
+            disabled={!premiumUser && !kycCompleted}
+            to="/investor/models"
+            component={NavLink}
+          >
             <CIcon customClassName="nav-icon" icon={cilChart} />
             Ml Model
           </CNavItem>
@@ -143,41 +167,84 @@ export default function InvestorAppSidebar() {
         <CNavGroup
           toggler={
             <>
-              <CIcon customClassName="nav-icon" icon={cilNewspaper} />
+              <CIcon
+                customClassName="nav-icon"
+                icon={
+                  !premiumUser && !kycCompleted ? cilLockLocked : cilNewspaper
+                }
+              />
               {/* Portfolio Management */}
               Ask Advisors
             </>
           }
         >
           <CNavItem
+            disabled={!premiumUser && !kycCompleted}
             to="/investor/portfolio/management/create"
             component={NavLink}
           >
             Create Portfolio Event
           </CNavItem>
 
-          <CNavItem to="/investor/portfolio/management" component={NavLink}>
+          <CNavItem
+            disabled={!premiumUser && !kycCompleted}
+            to="/investor/portfolio/management"
+            component={NavLink}
+          >
             View Portfolio Events
           </CNavItem>
         </CNavGroup>
-        <CNavItem to="/investor/events" component={NavLink}>
-          <CIcon customClassName="nav-icon" icon={cilSpreadsheet} />
+        <CNavItem
+          disabled={!premiumUser && !kycCompleted}
+          to="/investor/events"
+          component={NavLink}
+        >
+          <CIcon
+            customClassName="nav-icon"
+            icon={
+              !premiumUser && !kycCompleted ? cilLockLocked : cilSpreadsheet
+            }
+          />
           Event Analysis
         </CNavItem>
         {/* <CNavItem to="/investor/view/incomestatement/event" component={NavLink}>
           <CIcon customClassName="nav-icon" icon={cilSpreadsheet} />
           View Income Event
         </CNavItem> */}
-        <CNavItem to="/investor/papers" component={NavLink}>
-          <CIcon customClassName="nav-icon" icon={cilNewspaper} />
+        <CNavItem
+          disabled={!premiumUser && !kycCompleted}
+          to="/investor/papers"
+          component={NavLink}
+        >
+          <CIcon
+            customClassName="nav-icon"
+            icon={!premiumUser && !kycCompleted ? cilLockLocked : cilNewspaper}
+          />
           View Papers
         </CNavItem>
-        <CNavItem to="/investor/reports" component={NavLink}>
-          <CIcon customClassName="nav-icon" icon={cilDescription} /> MF activity
+        <CNavItem
+          disabled={!premiumUser && !kycCompleted}
+          to="/investor/reports"
+          component={NavLink}
+        >
+          <CIcon
+            customClassName="nav-icon"
+            icon={
+              !premiumUser && !kycCompleted ? cilLockLocked : cilDescription
+            }
+          />{" "}
+          MF activity
         </CNavItem>
-        <CNavItem to="/investor/economicactivity" component={NavLink}>
-          <CIcon customClassName="nav-icon" icon={cilChartLine} /> Economic
-          Activity
+        <CNavItem
+          disabled={!premiumUser && !kycCompleted}
+          to="/investor/economicactivity"
+          component={NavLink}
+        >
+          <CIcon
+            customClassName="nav-icon"
+            icon={!premiumUser && !kycCompleted ? cilLockLocked : cilChartLine}
+          />{" "}
+          Economic Activity
         </CNavItem>
         {/* <CNavItem to="/investor/equityderivatives" component={NavLink}>
           <CIcon customClassName="nav-icon" icon={cilMoney} /> Equity
@@ -190,9 +257,16 @@ export default function InvestorAppSidebar() {
         <CNavItem to="/investor/optionsanalyzer" component={NavLink}>
           <CIcon customClassName="nav-icon" icon={cilChart} /> Options analyzer
         </CNavItem> */}
-        <CNavItem to="/investor/advisorysessions" component={NavLink}>
-          <CIcon customClassName="nav-icon" icon={cilCalendar} /> Booked
-          Advisory Sessions
+        <CNavItem
+          disabled={!premiumUser && !kycCompleted}
+          to="/investor/advisorysessions"
+          component={NavLink}
+        >
+          <CIcon
+            customClassName="nav-icon"
+            icon={!premiumUser && !kycCompleted ? cilLockLocked : cilCalendar}
+          />{" "}
+          Booked Advisory Sessions
         </CNavItem>
       </CSidebarNav>
       <CSidebarToggler className="d-none d-lg-flex" />

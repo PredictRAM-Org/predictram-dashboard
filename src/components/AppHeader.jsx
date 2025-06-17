@@ -37,6 +37,7 @@ const AppHeader = () => {
   const investorPremiumUser = useSelector(
     (state) => state.investor.premiumUser
   );
+  const kycCompleted = useSelector((state) => state.investor.kycCompleted);
   const [payment, setPayment] = useState(false);
   const [refer, setRefer] = useState(false);
   const [beta, setBeta] = useState(false);
@@ -104,7 +105,9 @@ const AppHeader = () => {
               {refer && <Refer refer={refer} setRefer={setRefer} />}
               {beta && <LeaveBetaCard beta={beta} setBeta={setBeta} />}
             </SidebarUserAccess>
-            {!(investorAuth ? investorPremiumUser : premiumUser) && (
+            {(investorAuth
+              ? !investorPremiumUser && kycCompleted
+              : !premiumUser) && (
               <CHeaderNav style={{ marginLeft: "0.2375rem" }}>
                 <CButton
                   component="a"

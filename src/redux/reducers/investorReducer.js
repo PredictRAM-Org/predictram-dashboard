@@ -14,6 +14,8 @@ const initState = {
   expiry: undefined,
   triedFreePremium: false,
   profileCompleted: false,
+  kycCompleted: false,
+  kycDetails: {},
 };
 const investorReducer = (state = initState, action) => {
   switch (action.type) {
@@ -31,6 +33,8 @@ const investorReducer = (state = initState, action) => {
         secretToken,
         uniqueId,
         model_credit,
+        kycCompleted,
+        kycDetails,
       } = action.payload;
 
       return {
@@ -50,6 +54,8 @@ const investorReducer = (state = initState, action) => {
         expiry,
         triedFreePremium,
         model_credit,
+        kycCompleted,
+        kycDetails,
       };
     case "INVESTOR_AUTHENTICATED":
       return {
