@@ -119,6 +119,7 @@ export default function Event() {
 
     // Extracting data from the "Industry_Sector" column
     const industrySectors = jsonData.map((obj) => obj["Industry_Sector"]);
+    console.log('industrySectors', industrySectors);
     // Creating a Set to filter out duplicates
     const uniqueIndustrySectors = [...new Set(industrySectors)];
     // Transforming the array of unique sector names into an array of objects
@@ -278,7 +279,7 @@ export default function Event() {
       history.push("/viewevents");
       toast.success("Your data submitted successfully");
     } catch (error) {
-      console.log(error.response && error.response);
+      console.error(error.response && error.response);
     }
   }
 
