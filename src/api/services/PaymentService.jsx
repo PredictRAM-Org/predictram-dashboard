@@ -8,6 +8,7 @@ import {
   PAYMENT_DETAILS,
   CREATE_PAYMENT_ORDER,
   MODEL_CREDIT_PAYMENT_CONFIRMATION,
+  UPDATE_REGISTERED_INVESTORS,
 } from "../Endpoints";
 import {
   INVESTOR_CANCEL_FREE_MEMBERSHIP,
@@ -19,6 +20,10 @@ import {
 
 export const getPaymentDetails = async (setLoading, params) => {
   return await apiGetByParams(setLoading, PAYMENT_DETAILS, params);
+};
+
+export const completeKYC = async (setLoading, body) => {
+  return await apiPut(setLoading, UPDATE_REGISTERED_INVESTORS, body);
 };
 
 export const paymentGateway = async (setLoading, body, headers, role) => {

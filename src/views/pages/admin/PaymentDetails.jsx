@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Card, Container } from "@mui/material";
+import { Button, Card, Container } from "@mui/material";
 import Loader from "../users/Loader";
 import VisualNoData from "../../../utils/VisualNoData";
 import { CSmartTable } from "@coreui/react-pro";
-import { getPaymentDetails } from "../../../api/services/PaymentService";
-import { useQuery } from "@tanstack/react-query";
+import {
+  getPaymentDetails,
+  completeKYC,
+} from "../../../api/services/PaymentService";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 function PaymentDetails() {
   const [loading, setLoading] = useState(false);
@@ -18,15 +21,36 @@ function PaymentDetails() {
       key: "triedFreePremium",
       label: "Tried Free Premium",
     },
+    {
+      key: "pan",
+      label: "PAN",
+    },
+    {
+      key: "kycCompleted",
+      label: "KYC Completed",
+    },
+    { key: "completeKYC", label: "Complete KYC" },
   ];
 
-  const { data: { paymentDetails } = {}, isLoading } = useQuery({
+  const {
+    data: { paymentDetails } = {},
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: "paymentDetails",
     queryFn: async () => {
       const { data: paymentDetails } = await getPaymentDetails(setLoading);
       return { paymentDetails };
     },
     staleTime: 60000 * 2,
+  });
+
+  const { mutate: doKYc, isPending } = useMutation({
+    mutationKey: "completeKYC",
+    mutationFn: async (body) => {
+      const { data } = await completeKYC(setLoading, body);
+      refetch();
+    },
   });
 
   return (
@@ -59,6 +83,19 @@ function PaymentDetails() {
               pagination={{ size: "sm" }}
               sorterValue={{ column: "firstName", state: "asc" }}
               tableFilter
+              scopedColumns={{
+                completeKYC: (item) => (
+                  <td>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => doKYc({ id: item.id, kycCompleted: true })}
+                    >
+                      Complete KYC
+                    </Button>
+                  </td>
+                ),
+              }}
             />
           </div>
         )}

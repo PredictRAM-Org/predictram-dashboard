@@ -37,7 +37,8 @@ export default function InvestorAppSidebar() {
     (state) => state.investorSidebarShow.investorSidebarShow
   );
   const premiumUser = useSelector((state) => state.investor.premiumUser);
-  const kycCompleted = useSelector((state) => state.investor.kycCompleted);
+  // const kycCompleted = useSelector((state) => state.investor.kycCompleted);
+  const kycCompleted = true;
   const fyers_access_token = localStorage.getItem(fyers_access_token_key);
   const fyers_refresh_token = localStorage.getItem(fyers_refresh_token_key);
   const paytmMoney_access_token = localStorage.getItem(

@@ -115,6 +115,7 @@ export default function Event() {
 
   const categorizedStockDataFetch = async () => {
     const { data: jsonData } = await getCategorizedStocksData(setIsLoading);
+    console.log(jsonData);
 
     // Extracting data from the "Industry_Sector" column
     const industrySectors = jsonData.map((obj) => obj["Industry_Sector"]);

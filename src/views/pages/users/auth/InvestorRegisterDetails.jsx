@@ -111,6 +111,17 @@ function InvestorRegisterDetails() {
                 />
               </div>
               <div>
+                <CFormLabel htmlFor="inputPAN"> PAN</CFormLabel>
+                <CFormInput
+                  onChange={handleChange}
+                  id="inputPAN"
+                  name="pan"
+                  pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                  required
+                  placeholder="Enter your PAN"
+                />
+              </div>
+              <div>
                 <CFormLabel htmlFor="inputInvestment">
                   How much do you plan to invest in the next 2 years?
                 </CFormLabel>

@@ -194,3 +194,4 @@ export const BOND_QNA_URL = `${ADMIN_URL}/bond-qna`;
 
 // investor payment details
 export const PAYMENT_DETAILS = `${ADMIN_URL}/payment-details`;
+export const UPDATE_REGISTERED_INVESTORS = `${ADMIN_URL}/update/registered/investors`;
