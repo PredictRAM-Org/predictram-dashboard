@@ -32,7 +32,6 @@ export default function ForgetPassword() {
       const { data } = await post("/api/users/sendEmailOtp", {
         email: state.email,
       });
-      console.log(data.message);
       toast.dismiss(otpSendingToast);
       toast.success(data.message);
     } catch (error) {
